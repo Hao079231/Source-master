@@ -1,0 +1,35 @@
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+*.log
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# project ignore
+source/source-master/application-production.properties
+source/source-master/deploy_ec2.sh
+source/source-master/execute_jar_on_vm.sh
+source/source-master/target
+source/source-master/logs
+source/source-master/.idea
+source/source-master/*.iml
