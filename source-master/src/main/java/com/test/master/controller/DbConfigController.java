@@ -8,9 +8,11 @@ import com.test.master.dto.db.config.DbConfigDto;
 import com.test.master.form.db.config.CreateDbConfigForm;
 import com.test.master.form.db.config.UpdateDbConfigForm;
 import com.test.master.mapper.DbConfigMapper;
+import com.test.master.model.Restaurant;
 import com.test.master.model.Service;
 import com.test.master.model.DbConfig;
 import com.test.master.model.ServerProvider;
+import com.test.master.repository.RestaurantRepository;
 import com.test.master.repository.ServiceRepository;
 import com.test.master.repository.DbConfigRepository;
 import com.test.master.repository.ServerProviderRepository;
@@ -39,9 +41,6 @@ public class DbConfigController extends ABasicController{
     DbConfigRepository dbConfigRepository;
 
     @Autowired
-    ServiceRepository serviceRepository;
-
-    @Autowired
     DbConfigMapper dbConfigMapper;
 
     @Autowired
@@ -49,6 +48,9 @@ public class DbConfigController extends ABasicController{
 
     @Autowired
     ServerProviderRepository serverProviderRepository;
+
+    @Autowired
+    RestaurantRepository restaurantRepository;
 
     @GetMapping(value = "/get/{careerId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('DB_V_ST')")
@@ -115,13 +117,13 @@ public class DbConfigController extends ABasicController{
             apiMessageDto.setCode(ErrorCode.DB_CONFIG_ERROR_UNAUTHORIZED);
             return apiMessageDto;
         }
-        DbConfig dbConfig = dbConfigRepository.findByServiceId(createDbConfigForm.getServiceId());
+        DbConfig dbConfig = dbConfigRepository.findFirstByRestaurantId(createDbConfigForm.getRestaurantId());
         if(dbConfig != null){
             apiMessageDto.setResult(false);
             apiMessageDto.setCode(ErrorCode.DB_CONFIG_SHOP_EXISTED);
             return apiMessageDto;
         }
-        Service store = serviceRepository.findById(createDbConfigForm.getServiceId()).orElse(null);
+        Restaurant store = restaurantRepository.findById(createDbConfigForm.getRestaurantId()).orElse(null);
         if (store == null || store.getStatus() != WinWinConstant.STATUS_ACTIVE) {
             apiMessageDto.setResult(false);
             apiMessageDto.setCode(ErrorCode.SERVICE_ERROR_NOT_FOUND);
@@ -129,7 +131,8 @@ public class DbConfigController extends ABasicController{
         }
 
         dbConfig = dbConfigMapper.fromCreateFormToEntity(createDbConfigForm);
-        dbConfig.setName("tenant_id_" + store.getId()); //tenant_id_[id nha hang]
+        dbConfig.setName("tenant_id_" + store.getId());//tenant_id_[id nha hang]
+        store.setTenantId(dbConfig.getName());
 
         ServerProvider serverProvider = serverProviderRepository.findById(createDbConfigForm.getServerProviderId()).orElse(null);
         if(serverProvider == null){
@@ -161,6 +164,7 @@ public class DbConfigController extends ABasicController{
             return apiMessageDto;
         }
 
+        restaurantRepository.save(store);
         dbConfigRepository.save(dbConfig);
 
         apiMessageDto.setMessage("Create db config success");

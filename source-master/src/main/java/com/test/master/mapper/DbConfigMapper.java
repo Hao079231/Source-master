@@ -18,7 +18,7 @@ public interface DbConfigMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "initialize", target = "initialize")
-    @Mapping(source = "serviceId", target = "service.id")
+    @Mapping(source = "restaurantId", target = "restaurant.id")
     @Mapping(source = "maxConnection", target = "maxConnection")
     @BeanMapping(ignoreByDefault = true)
     @Named("adminCreateMapping")

@@ -1,0 +1,72 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Authentication" id="1749138942905-1">
+        <createTable tableName="db_master_customer">
+            <column name="account_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_master_customerPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="logo_path" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Authentication" id="1749138942905-2">
+        <createTable tableName="db_master_restaurant">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_master_restaurantPK"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="banner_path" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="hotline" type="VARCHAR(255)"/>
+            <column name="lang" type="VARCHAR(255)"/>
+            <column name="logo_path" type="VARCHAR(255)"/>
+            <column name="restaurant_name" type="VARCHAR(255)"/>
+            <column name="settings" type="TEXT"/>
+            <column name="tenant_id" type="VARCHAR(255)"/>
+            <column name="customer_account_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Authentication" id="1749138942905-3">
+        <addColumn tableName="db_master_db_config">
+            <column name="restaurant_id" type="bigint"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="Authentication" id="1749138942905-4">
+        <addForeignKeyConstraint baseColumnNames="customer_account_id" baseTableName="db_master_restaurant" constraintName="FK28xqrixw6wc8sf4ncasxr8geu" deferrable="false" initiallyDeferred="false" referencedColumnNames="account_id" referencedTableName="db_master_customer" validate="true"/>
+    </changeSet>
+    <changeSet author="Authentication" id="1749138942905-5">
+        <addForeignKeyConstraint baseColumnNames="restaurant_id" baseTableName="db_master_db_config" constraintName="FKa9i4renq5m1tj8r6v5a4o4c3g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_master_restaurant" validate="true"/>
+    </changeSet>
+    <changeSet author="Authentication" id="1749138942905-6">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="db_master_customer" constraintName="FKiilp8oxcfdt9xqtgeet52ri7f" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_master_account" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

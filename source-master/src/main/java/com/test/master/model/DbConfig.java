@@ -33,4 +33,8 @@ public class DbConfig {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_provider_id")
     private ServerProvider serverProvider;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
 }

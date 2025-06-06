@@ -42,6 +42,18 @@ public class ErrorCode {
     public static final String ACCOUNT_ERROR_ACCOUNT_IS_NOT_MANAGER = "ERROR-ACCOUNT-0013";
     public static final String ACCOUNT_ERROR_NOT_DELETE_SUPPER_ADMIN = "ERROR-ACCOUNT-00014";
 
+    /**
+     * Starting error code Group
+     * */
+    public static final String GROUP_ERROR_NOT_FOUND = "ERROR-GROUP-0000";
+
+    /**
+     * Starting error code Restaurant
+     * */
+    public static final String RESTAURANT_ERROR_NOT_FOUND = "ERROR-RESTAURANT-0000";
+    public static final String RESTAURANT_ERROR_EXIST = "ERROR-RESTAURANT-0001";
+    public static final String RESTAURANT_ERROR_UN_AUTHORIZE = "ERROR-RESTAURANT-0002";
+
 
     /**
      * Starting error code AuthenticationToken
@@ -60,6 +72,8 @@ public class ErrorCode {
     public static final String CUSTOMER_ERROR_EXIST = "ERROR-CUSTOMER-0002";
     public static final String CUSTOMER_ERROR_UPDATE = "ERROR-CUSTOMER-0003";
     public static final String CUSTOMER_ERROR_NOT_FOUND = "ERROR-CUSTOMER-0004";
+    public static final String CUSTOMER_ERROR_UN_AUTHORIZE = "ERROR-GROUP-0005";
+    public static final String CUSTOMER_ERROR_NOT_ACTIVE = "ERROR-GROUP-0006";
 
 
     /**
