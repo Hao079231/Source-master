@@ -34,7 +34,7 @@ public class CreateDbConfigForm {
     @ApiModelProperty(required = true)
     private boolean initialize;
 
-    @NotNull(message = "serviceId cannot be null")
+    @NotNull(message = "restaurantId cannot be null")
     @ApiModelProperty(required = true)
-    private Long serviceId;
+    private Long restaurantId;
 }

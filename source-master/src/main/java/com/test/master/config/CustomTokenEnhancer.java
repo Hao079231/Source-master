@@ -32,13 +32,13 @@ public class CustomTokenEnhancer implements TokenEnhancer {
         String tenantId = authentication.getOAuth2Request().getRequestParameters().get("tenantId");
         String username = authentication.getName();
         if(authentication.getOAuth2Request().getGrantType() != null){
-            additionalInfo = getAdditionalInfo(null,username, authentication.getOAuth2Request().getGrantType(), null);
+            additionalInfo = getAdditionalInfo(tenantId,username, authentication.getOAuth2Request().getGrantType(), null);
         }else {
             String grantType = authentication.getOAuth2Request().getRequestParameters().get("grantType");
             if(grantType.equals(SecurityConstant.GRANT_TYPE_CUSTOMER) ||
                grantType.equals(SecurityConstant.GRANT_TYPE_DRIVER)){
                 Long userId = Long.parseLong(authentication.getOAuth2Request().getRequestParameters().get("userId"));
-                additionalInfo = getAdditionalInfoCustom(null, username, grantType, userId);
+                additionalInfo = getAdditionalInfoCustom(tenantId, username, grantType, userId);
             }
         }
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
@@ -59,7 +59,7 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             Integer tabletKind = -1;
             Long orderId = -1L;
             Boolean isSuperAdmin = a.getIsSuperAdmin();
-            String tenantId = "";
+            String tenantId = tenantName;
             additionalInfo.put("user_id", accountId);
             additionalInfo.put("user_kind", a.getKind());
             additionalInfo.put("grant_type", grantType);
@@ -142,10 +142,10 @@ public class CustomTokenEnhancer implements TokenEnhancer {
 
     public String getTenantByAccountId(Long accountId){
         try{
-            String query = "select distinct coalesce(GROUP_CONCAT(CONCAT(d.name, \"&\", d.service_id) SEPARATOR ':'), '') " +
-                    "from db_master_service r " +
-                    "join db_master_db_config d on r.account_id = d.service_id " +
-                    "where account_id = ? and status = 1 ";
+            String query = "select distinct coalesce(GROUP_CONCAT(CONCAT(d.name, \"&\", d.restaurant_id) SEPARATOR ':'), '') " +
+                    "from db_master_restaurant r " +
+                    "join db_master_db_config d on r.id = d.restaurant_id " +
+                    "where r.customer_id = ? and status = 1 ";
             return jdbcTemplate.queryForObject(query, String.class, accountId);
         }catch (Exception e) {
             e.printStackTrace();
@@ -155,9 +155,9 @@ public class CustomTokenEnhancer implements TokenEnhancer {
 
     public String getTenantInfoByTenantId(String tenantId){
         try{
-            String query = "select distinct coalesce(GROUP_CONCAT(CONCAT(d.name, \"&\", d.service_id) SEPARATOR ':'), '') " +
-                    "from db_master_service r " +
-                    "join db_master_db_config d on r.account_id = d.service_id " +
+            String query = "select distinct coalesce(GROUP_CONCAT(CONCAT(d.name, \"&\", d.restaurant_id) SEPARATOR ':'), '') " +
+                    "from db_master_restaurant r " +
+                    "join db_master_db_config d on r.id = d.restaurant_id " +
                     "where tenant_id = ? and status = 1 ";
             return jdbcTemplate.queryForObject(query, String.class, tenantId);
         }catch (Exception e) {

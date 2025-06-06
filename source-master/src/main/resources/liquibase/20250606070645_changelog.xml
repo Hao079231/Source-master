@@ -1,0 +1,29 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Authentication" id="1749193613060-1">
+        <dropForeignKeyConstraint
+          baseTableName="db_master_restaurant"
+          constraintName="FK28xqrixw6wc8sf4ncasxr8geu"/>
+    </changeSet>
+
+    <changeSet author="Authentication" id="1749193613060-2">
+        <renameColumn
+          tableName="db_master_restaurant"
+          oldColumnName="customer_account_id"
+          newColumnName="customer_id"
+          columnDataType="bigint"/>
+    </changeSet>
+
+    <changeSet author="Authentication" id="1749193613060-3">
+        <addForeignKeyConstraint
+          baseColumnNames="customer_id"
+          baseTableName="db_master_restaurant"
+          constraintName="FK_customer_restaurant"
+          referencedColumnNames="account_id"
+          referencedTableName="db_master_customer"
+          deferrable="false"
+          initiallyDeferred="false"
+          validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

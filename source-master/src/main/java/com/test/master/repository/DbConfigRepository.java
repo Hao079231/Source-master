@@ -2,6 +2,8 @@ package com.test.master.repository;
 
 
 import com.test.master.model.DbConfig;
+import java.util.Optional;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +23,8 @@ public interface DbConfigRepository extends JpaRepository<DbConfig, Long>, JpaSp
             " JOIN Service r ON d.service = r" +
             " WHERE r.id = :serviceId")
     DbConfig findByServiceId(@Param("serviceId") Long serviceId);
+
+    Optional<DbConfig> findByRestaurantId(Long id);
+
+    DbConfig findFirstByRestaurantId(Long restaurantId);
 }

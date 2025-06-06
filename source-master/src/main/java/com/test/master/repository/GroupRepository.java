@@ -1,6 +1,7 @@
 package com.test.master.repository;
 
 import com.test.master.model.Group;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,6 @@ public interface GroupRepository extends JpaRepository<Group, Long>, JpaSpecific
    public Group checkPermission(long accountId, String action);
 
    public Group findFirstByKind(int kind);
+
+   public Optional<Group> findFirstByKindAndIsSystemRole(Integer kind, boolean isSystemRole);
 }

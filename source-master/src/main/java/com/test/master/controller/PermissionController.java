@@ -23,7 +23,7 @@ import java.util.List;
 @RequestMapping("/v1/permission")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @Slf4j
-@ApiIgnore
+//@ApiIgnore
 public class PermissionController extends ABasicController{
     @Autowired
     PermissionRepository permissionRepository;
