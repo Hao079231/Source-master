@@ -116,7 +116,7 @@ public class CustomerController extends ABasicController{
   }
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-//  @PreAuthorize("hasRole('CUS_P')")
+  @PreAuthorize("hasRole('CUS_P')")
   public ApiMessageDto<CustomerDto> getProfile(){
     ApiMessageDto<CustomerDto> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(getCurrentUser()).orElseThrow(() ->
@@ -132,20 +132,21 @@ public class CustomerController extends ABasicController{
     ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(updateCustomerForm.getId()).orElseThrow(()
     -> new NotFoundException("Customer not found", ErrorCode.CUSTOMER_ERROR_NOT_FOUND));
+
     if (StringUtils.isNotBlank(updateCustomerForm.getNewPassword())){
       customer.getAccount().setPassword(passwordEncoder.encode(updateCustomerForm.getNewPassword()));
     }
+
     if (StringUtils.isNotBlank(updateCustomerForm.getUsername()) && !customer.getAccount().getUsername().equals(updateCustomerForm.getUsername())
     && accountRepository.findAccountByUsername(updateCustomerForm.getUsername()) != null){
       throw new BadRequestException("Username already exist!", ErrorCode.CUSTOMER_ERROR_EXIST);
     }
+
     if (StringUtils.isNotBlank(updateCustomerForm.getEmail()) && !customer.getAccount().getEmail().equals(updateCustomerForm.getEmail())
     && accountRepository.findAccountByEmail(updateCustomerForm.getEmail()) != null){
       throw new BadRequestException("Email already exist!", ErrorCode.CUSTOMER_ERROR_EXIST);
     }
-    if (WinWinConstant.STATUS_ACTIVE.equals(customer.getStatus()) && !WinWinConstant.STATUS_ACTIVE.equals(updateCustomerForm.getStatus())){
-      customer.setStatus(WinWinConstant.STATUS_LOCK);
-    }
+
     accountMapper.updateCustomerFormToEntity(updateCustomerForm, customer.getAccount());
     customerMapper.updateCustomerFormToEntity(updateCustomerForm, customer);
     accountRepository.save(customer.getAccount());
@@ -155,27 +156,32 @@ public class CustomerController extends ABasicController{
   }
 
   @PutMapping(value = "/client-update", produces = MediaType.APPLICATION_JSON_VALUE)
-//  @PreAuthorize("hasRole('CUS_C_U')")
+  @PreAuthorize("hasRole('CUS_C_U')")
   public ApiMessageDto<String> updateProfile(@Valid @RequestBody UpdateProfileCustomerForm updateProfileCustomerForm, BindingResult bindingResult){
     ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(getCurrentUser()).orElseThrow(()
     -> new NotFoundException("Customer not found",ErrorCode.CUSTOMER_ERROR_NOT_FOUND));
+
     if (!WinWinConstant.STATUS_ACTIVE.equals(customer.getStatus())){
       throw new BadRequestException("Customer not active", ErrorCode.CUSTOMER_ERROR_NOT_ACTIVE);
     }
+
     if (StringUtils.isNotBlank(updateProfileCustomerForm.getEmail()) && !customer.getAccount().getEmail().equals(updateProfileCustomerForm.getEmail())
     && accountRepository.findAccountByEmail(updateProfileCustomerForm.getEmail()) != null){
       throw new BadRequestException("Email already exist", ErrorCode.CUSTOMER_ERROR_EXIST);
     }
+
     if (StringUtils.isNotBlank(updateProfileCustomerForm.getOldPassword()) && StringUtils.isNotBlank(updateProfileCustomerForm.getNewPassword())){
       if (!passwordEncoder.matches(updateProfileCustomerForm.getOldPassword(), customer.getAccount().getPassword())){
         throw new BadRequestException("Password invalid", ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD);
       }
+
       if (updateProfileCustomerForm.getOldPassword().equals(updateProfileCustomerForm.getNewPassword())){
         throw new BadRequestException("New password must be different from old password");
       }
       customer.getAccount().setPassword(passwordEncoder.encode(updateProfileCustomerForm.getNewPassword()));
     }
+
     accountMapper.updateProfileCustomerFormToEntity(updateProfileCustomerForm, customer.getAccount());
     customerMapper.updateProfileCustomerFormToEntity(updateProfileCustomerForm, customer);
     accountRepository.save(customer.getAccount());
@@ -190,9 +196,11 @@ public class CustomerController extends ABasicController{
     ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(id).orElseThrow(()
     -> new BadRequestException("Customer not found", ErrorCode.CUSTOMER_ERROR_NOT_FOUND));
+
     if (restaurantRepository.existsByCustomerId(customer.getId())){
       throw new BadRequestException("The restaurant has served this customer", ErrorCode.RESTAURANT_ERROR_EXIST);
     }
+    
     customerRepository.deleteById(id);
     accountRepository.deleteById(id);
     apiMessageDto.setMessage("Delete customer successfully");
