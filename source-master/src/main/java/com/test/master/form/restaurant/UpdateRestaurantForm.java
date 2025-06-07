@@ -2,6 +2,7 @@ package com.test.master.form.restaurant;
 
 import com.test.master.validation.Phone;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 

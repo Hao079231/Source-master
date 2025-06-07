@@ -18,6 +18,7 @@ public class RestaurantCriteria {
   private String restaurantName;
   private String city;
   private Long customerId;
+  private Integer status;
 
   public Specification<Restaurant> getSpecification() {
     return new Specification<Restaurant>() {
@@ -35,6 +36,9 @@ public class RestaurantCriteria {
         if(getCustomerId() != null){
           Join<Restaurant, Customer> restaurantJoin = root.join("customer", JoinType.INNER);
           predicates.add(cb.equal(restaurantJoin.get("id"), getCustomerId()));
+        }
+        if (getStatus() != null) {
+          predicates.add(cb.equal(root.get("status"), getStatus()));
         }
         return cb.and(predicates.toArray(new Predicate[predicates.size()]));
       }

@@ -15,7 +15,6 @@ import com.test.master.model.Group;
 import com.test.master.model.criteria.EmployeeAccountCriteria;
 import com.test.master.repository.AccountRepository;
 import com.test.master.repository.GroupRepository;
-import com.test.master.repository.ServiceRepository;
 import com.test.master.service.WinWinApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -50,9 +49,6 @@ public class EmployeeAccountController extends ABasicController{
 
     @Autowired
     private WinWinApiService winWinApiService;
-
-    @Autowired
-    private ServiceRepository serviceRepository;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('EACC_L')")
@@ -189,7 +185,6 @@ public class EmployeeAccountController extends ABasicController{
         }
         //delete avatar file
         winWinApiService.deleteFile(account.getAvatarPath());
-        serviceRepository.deleteAllByAccountId(id);
         accountRepository.deleteById(id);
         apiMessageDto.setMessage("Delete employee success");
         return apiMessageDto;

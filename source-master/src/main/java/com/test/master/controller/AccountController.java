@@ -1,10 +1,6 @@
 package com.test.master.controller;
 
 
-import com.test.master.dto.ResponseListDto;
-import com.test.master.exception.UnauthorizationException;
-import com.test.master.model.Service;
-import com.test.master.model.criteria.AccountCriteria;
 import com.test.master.repository.AccountRepository;
 import com.test.master.repository.GroupRepository;
 import com.test.master.dto.ApiResponse;
@@ -12,15 +8,12 @@ import com.test.master.dto.ErrorCode;
 import com.test.master.mapper.AccountMapper;
 import com.test.master.model.Account;
 import com.test.master.constant.WinWinConstant;
-import com.test.master.repository.ServiceRepository;
 import com.test.master.utils.AESUtils;
 import com.test.master.model.Group;
 import com.test.master.service.WinWinApiService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,22 +52,19 @@ public class AccountController extends ABasicController{
     @Autowired
     WinWinApiService winWinApiService;
 
-    @Autowired
-    ServiceRepository serviceRepository;
-
-    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ACC_L')")
-    public ApiResponse<ResponseListDto<Service>> list(AccountCriteria accountCriteria, Pageable pageable) {
-        if(!isSuperAdmin() ){
-            throw new UnauthorizationException("Not allowed to list career.");
-        }
-        ApiResponse<ResponseListDto<Service>> apiMessageDto = new ApiResponse<>();
-        Page<Account> careerList = accountRepository.findAll(accountCriteria.getSpecification() , pageable);
-        ResponseListDto<Service> responseListDto = new ResponseListDto(careerList.getContent(), careerList.getTotalElements(), careerList.getTotalPages());
-        apiMessageDto.setData(responseListDto);
-        apiMessageDto.setMessage("Get career list success");
-        return apiMessageDto;
-    }
+//    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @PreAuthorize("hasRole('ACC_L')")
+//    public ApiResponse<ResponseListDto<Service>> list(AccountCriteria accountCriteria, Pageable pageable) {
+//        if(!isSuperAdmin() ){
+//            throw new UnauthorizationException("Not allowed to list career.");
+//        }
+//        ApiResponse<ResponseListDto<Service>> apiMessageDto = new ApiResponse<>();
+//        Page<Account> careerList = accountRepository.findAll(accountCriteria.getSpecification() , pageable);
+//        ResponseListDto<Service> responseListDto = new ResponseListDto(careerList.getContent(), careerList.getTotalElements(), careerList.getTotalPages());
+//        apiMessageDto.setData(responseListDto);
+//        apiMessageDto.setMessage("Get career list success");
+//        return apiMessageDto;
+//    }
 
     @PostMapping(value = "/create_admin", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ACC_C_AD')")
@@ -180,7 +170,6 @@ public class AccountController extends ABasicController{
             winWinApiService.deleteFile(e.getAvatarPath());
         }
         accountRepository.deleteAllByParentId(id);
-        serviceRepository.deleteAllByAccountId(id);
         accountRepository.deleteById(id);
         apiMessageDto.setMessage("Delete Account success");
         return apiMessageDto;

@@ -16,13 +16,13 @@ public interface DbConfigRepository extends JpaRepository<DbConfig, Long>, JpaSp
     List<DbConfig> findAllByServerProviderId(Long id);
     List<DbConfig> findAllByInitialize(boolean isInit);
 
-    DbConfig findFirstByServiceTenantId(String name);
+    DbConfig findFirstByRestaurantTenantId(String name);
 
-    @Query("SELECT d" +
-            " FROM DbConfig d" +
-            " JOIN Service r ON d.service = r" +
-            " WHERE r.id = :serviceId")
-    DbConfig findByServiceId(@Param("serviceId") Long serviceId);
+//    @Query("SELECT d" +
+//            " FROM DbConfig d" +
+//            " JOIN Restaurant r ON d.restaurant = r" +
+//            " WHERE r.id = :restaurantId")
+//    DbConfig findByRestaurantId(@Param("restaurantId") Long restaurantId);
 
     Optional<DbConfig> findByRestaurantId(Long id);
 
