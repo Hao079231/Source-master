@@ -26,13 +26,11 @@ public class TenantUtils {
                 Statement stmt = connection.createStatement();
             ) {
                 stmt.execute("DROP DATABASE IF EXISTS `" + dbName + "`;");
-                stmt.execute("DROP USER IF EXISTS '" + dbConfig.getUsername() + "';");
                 stmt.execute("DROP USER IF EXISTS '" + dbConfig.getUsername() + "'@'localhost';");
                 stmt.execute("FLUSH PRIVILEGES;");
-                System.out.println("Tenant resources dropped successfully...");
             } catch (SQLException e) {
                 e.printStackTrace();
-                throw new BadRequestException("[Restaurant] Failed to remove tenant resources", ErrorCode.DB_CONFIG_ERROR_DROP);
+                throw new BadRequestException("Failed to remove tenant resources", ErrorCode.DB_CONFIG_ERROR_DROP);
             }
         }
     }

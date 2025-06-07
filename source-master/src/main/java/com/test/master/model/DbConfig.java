@@ -26,10 +26,6 @@ public class DbConfig {
     private String driverClassName;
     private boolean initialize;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "service_id")
-    private Service service;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_provider_id")
     private ServerProvider serverProvider;

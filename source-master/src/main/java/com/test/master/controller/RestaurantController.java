@@ -20,6 +20,7 @@ import com.test.master.repository.CustomerRepository;
 import com.test.master.repository.DbConfigRepository;
 import com.test.master.repository.RestaurantRepository;
 import com.test.master.repository.ServerProviderRepository;
+import com.test.master.service.WinWinApiService;
 import com.test.master.service.impl.UserServiceImpl;
 import com.test.master.utils.TenantUtils;
 import java.util.List;
@@ -48,23 +49,25 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class RestaurantController extends ABasicController{
   @Autowired
-  private RestaurantRepository restaurantRepository;
+  RestaurantRepository restaurantRepository;
   @Autowired
-  private RestaurantMapper restaurantMapper;
+  RestaurantMapper restaurantMapper;
   @Autowired
-  private CustomerRepository customerRepository;
+  CustomerRepository customerRepository;
   @Autowired
-  private UserServiceImpl userService;
+  UserServiceImpl userService;
   @Autowired
-  private DbConfigRepository dbConfigRepository;
+  DbConfigRepository dbConfigRepository;
   @Autowired
-  private ServerProviderRepository serverProviderRepository;
+  ServerProviderRepository serverProviderRepository;
+  @Autowired
+  WinWinApiService winWinApiService;
 
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('RES_C')")
   public ApiMessageDto<String> create(@Valid @RequestBody CreateRestaurantForm createRestaurantForm, BindingResult bindingResult){
     if (!isSuperAdmin()){
-      throw new UnauthorizationException("Restaurant is not allowed", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
+      throw new UnauthorizationException("Not allowed create restaurant", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
     }
 
     ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
@@ -82,7 +85,7 @@ public class RestaurantController extends ABasicController{
   @PreAuthorize("hasRole('RES_L')")
   public ApiMessageDto<ResponseListDto<List<RestaurantDto>>> getList(RestaurantCriteria restaurantCriteria, Pageable pageable){
     if (!isSuperAdmin()){
-      throw new UnauthorizationException("Restaurant is not allowed", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
+      throw new UnauthorizationException("Not allowed get list restaurant", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
     }
 
     ApiMessageDto<ResponseListDto<List<RestaurantDto>>> apiMessageDto = new ApiMessageDto<>();
@@ -97,7 +100,7 @@ public class RestaurantController extends ABasicController{
   @PreAuthorize("hasRole('RES_V')")
   public ApiMessageDto<RestaurantDto> get(@PathVariable("id") Long id){
     if (!isSuperAdmin()){
-      throw new UnauthorizationException("Restaurant is not allowed", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
+      throw new UnauthorizationException("Not allowed get restaurant", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
     }
 
     ApiMessageDto<RestaurantDto> apiMessageDto = new ApiMessageDto<>();
@@ -151,7 +154,7 @@ public class RestaurantController extends ABasicController{
   @PreAuthorize("hasRole('RES_U')")
   public ApiMessageDto<String> update(@Valid @RequestBody UpdateRestaurantForm updateRestaurantForm, BindingResult bindingResult){
     if (!isSuperAdmin()){
-      throw new UnauthorizationException("Restaurant is not allowed", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
+      throw new UnauthorizationException("Not allowed update restaurant", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
     }
 
     ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
@@ -173,6 +176,21 @@ public class RestaurantController extends ABasicController{
         throw new BadRequestException("Restaurant name already exist", ErrorCode.RESTAURANT_ERROR_EXIST);
     }
 
+    if(StringUtils.isNotBlank(updateRestaurantForm.getLogoPath())){
+      if (!updateRestaurantForm.getLogoPath().equals(restaurant.getLogoPath())){
+        winWinApiService.deleteFile(restaurant.getLogoPath());
+      }
+      restaurant.setLogoPath(updateRestaurantForm.getLogoPath());
+    }
+
+    if(StringUtils.isNotBlank(updateRestaurantForm.getBannerPath())){
+      if (!updateRestaurantForm.getBannerPath().equals(restaurant.getBannerPath())){
+        winWinApiService.deleteFile(restaurant.getBannerPath());
+      }
+      restaurant.setLogoPath(updateRestaurantForm.getBannerPath());
+    }
+
+
     restaurantMapper.updateFromRestaurantFormToEntity(updateRestaurantForm, restaurant);
     restaurantRepository.save(restaurant);
     apiMessageDto.setMessage("Update restaurant successfully");
@@ -183,7 +201,7 @@ public class RestaurantController extends ABasicController{
   @PreAuthorize("hasRole('RES_D')")
   public ApiMessageDto<String> delete(@PathVariable("id") Long id){
     if (!isSuperAdmin()){
-      throw new UnauthorizationException("Restaurant is not allowed", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
+      throw new UnauthorizationException("Not allowed delete restaurant", ErrorCode.RESTAURANT_ERROR_UN_AUTHORIZE);
     }
 
     ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
@@ -199,6 +217,14 @@ public class RestaurantController extends ABasicController{
         serverProvider.setCurrentTenantCount(serverProvider.getCurrentTenantCount() - 1);
         serverProviderRepository.save(serverProvider);
       }
+    }
+
+    if (StringUtils.isNotBlank(restaurant.getLogoPath())){
+      winWinApiService.deleteFile(restaurant.getLogoPath());
+    }
+
+    if (StringUtils.isNotBlank(restaurant.getBannerPath())){
+      winWinApiService.deleteFile(restaurant.getBannerPath());
     }
 
     restaurantRepository.delete(restaurant);

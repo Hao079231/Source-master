@@ -1,5 +1,7 @@
 package com.test.master.service;
 
+import com.test.master.dto.ErrorCode;
+import com.test.master.exception.BadRequestException;
 import com.test.master.model.Permission;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +22,18 @@ public class WinWinApiService {
     @Autowired
     CommonAsyncService commonAsyncService;
 
+    @Autowired
+    WinWinMediaService winWinMediaService;
+
     private Map<String, Long> storeQRCodeRandom = new ConcurrentHashMap<>();
 
     public void deleteFile(String filePath) {
         //call to mediaService for delete
-
+        if (winWinMediaService.deleteFile(filePath)){
+            System.out.println("Delete file successfully");
+        } else {
+            throw new BadRequestException("Failed to delete the file", ErrorCode.FILE_ERROR_DELETE);
+        }
     }
 
 

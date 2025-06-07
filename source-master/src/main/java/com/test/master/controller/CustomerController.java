@@ -20,6 +20,7 @@ import com.test.master.repository.AccountRepository;
 import com.test.master.repository.CustomerRepository;
 import com.test.master.repository.GroupRepository;
 import com.test.master.repository.RestaurantRepository;
+import com.test.master.service.WinWinApiService;
 import java.util.List;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -48,19 +49,21 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class CustomerController extends ABasicController{
   @Autowired
-  private CustomerRepository customerRepository;
+  CustomerRepository customerRepository;
   @Autowired
-  private CustomerMapper customerMapper;
+  CustomerMapper customerMapper;
   @Autowired
-  private AccountRepository accountRepository;
+  AccountRepository accountRepository;
   @Autowired
-  private AccountMapper accountMapper;
+  AccountMapper accountMapper;
   @Autowired
-  private PasswordEncoder passwordEncoder;
+  PasswordEncoder passwordEncoder;
   @Autowired
-  private GroupRepository groupRepository;
+  GroupRepository groupRepository;
   @Autowired
-  private RestaurantRepository restaurantRepository;
+  RestaurantRepository restaurantRepository;
+  @Autowired
+  WinWinApiService winWinApiService;
 
   @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
   @PreAuthorize("hasRole('CUS_C')")
@@ -147,6 +150,20 @@ public class CustomerController extends ABasicController{
       throw new BadRequestException("Email already exist!", ErrorCode.CUSTOMER_ERROR_EXIST);
     }
 
+    if (StringUtils.isNotBlank(updateCustomerForm.getAvatarPath())){
+      if (!updateCustomerForm.getAvatarPath().equals(customer.getAccount().getAvatarPath())){
+        winWinApiService.deleteFile(customer.getAccount().getAvatarPath());
+      }
+      customer.getAccount().setAvatarPath(updateCustomerForm.getAvatarPath());
+    }
+
+    if (StringUtils.isNotBlank(updateCustomerForm.getLogoPath())){
+      if (!updateCustomerForm.getLogoPath().equals(customer.getLogoPath())){
+        winWinApiService.deleteFile(customer.getLogoPath());
+      }
+      customer.setLogoPath(updateCustomerForm.getLogoPath());
+    }
+
     accountMapper.updateCustomerFormToEntity(updateCustomerForm, customer.getAccount());
     customerMapper.updateCustomerFormToEntity(updateCustomerForm, customer);
     accountRepository.save(customer.getAccount());
@@ -182,6 +199,20 @@ public class CustomerController extends ABasicController{
       customer.getAccount().setPassword(passwordEncoder.encode(updateProfileCustomerForm.getNewPassword()));
     }
 
+    if (StringUtils.isNotBlank(updateProfileCustomerForm.getAvatarPath())){
+      if (!updateProfileCustomerForm.getAvatarPath().equals(customer.getAccount().getAvatarPath())){
+        winWinApiService.deleteFile(customer.getAccount().getAvatarPath());
+      }
+      customer.getAccount().setAvatarPath(updateProfileCustomerForm.getAvatarPath());
+    }
+
+    if (StringUtils.isNotBlank(updateProfileCustomerForm.getLogoPath())){
+      if (!updateProfileCustomerForm.getLogoPath().equals(customer.getLogoPath())){
+        winWinApiService.deleteFile(customer.getLogoPath());
+      }
+      customer.setLogoPath(updateProfileCustomerForm.getLogoPath());
+    }
+
     accountMapper.updateProfileCustomerFormToEntity(updateProfileCustomerForm, customer.getAccount());
     customerMapper.updateProfileCustomerFormToEntity(updateProfileCustomerForm, customer);
     accountRepository.save(customer.getAccount());
@@ -200,7 +231,15 @@ public class CustomerController extends ABasicController{
     if (restaurantRepository.existsByCustomerId(customer.getId())){
       throw new BadRequestException("The restaurant has served this customer", ErrorCode.RESTAURANT_ERROR_EXIST);
     }
-    
+
+    if (StringUtils.isNotBlank(customer.getAccount().getAvatarPath())){
+      winWinApiService.deleteFile(customer.getAccount().getAvatarPath());
+    }
+
+    if (StringUtils.isNotBlank(customer.getLogoPath())){
+      winWinApiService.deleteFile(customer.getLogoPath());
+    }
+
     customerRepository.deleteById(id);
     accountRepository.deleteById(id);
     apiMessageDto.setMessage("Delete customer successfully");

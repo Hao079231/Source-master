@@ -98,6 +98,11 @@ public class ErrorCode {
     public static final String SERVER_PROVIDER_ERROR_NOT_FOUND = "ERROR-SERVER-PROVIDER-001";
     public static final String SERVER_PROVIDER_ERROR_URL_EXISTED = "ERROR-SERVER-PROVIDER-002";
     public static final String SERVER_PROVIDER_ERROR_NOT_ANY_VALID = "ERROR-SERVER-PROVIDER-003";
-    
+
+
+    /**
+     * Starting error code DELETE FILE
+     * */
+    public static final String FILE_ERROR_DELETE = "ERROR-FILE-0000";
 
 }

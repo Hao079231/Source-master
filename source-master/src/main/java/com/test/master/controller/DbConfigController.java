@@ -9,11 +9,9 @@ import com.test.master.form.db.config.CreateDbConfigForm;
 import com.test.master.form.db.config.UpdateDbConfigForm;
 import com.test.master.mapper.DbConfigMapper;
 import com.test.master.model.Restaurant;
-import com.test.master.model.Service;
 import com.test.master.model.DbConfig;
 import com.test.master.model.ServerProvider;
 import com.test.master.repository.RestaurantRepository;
-import com.test.master.repository.ServiceRepository;
 import com.test.master.repository.DbConfigRepository;
 import com.test.master.repository.ServerProviderRepository;
 import com.zaxxer.hikari.HikariDataSource;
@@ -61,7 +59,7 @@ public class DbConfigController extends ABasicController{
             result.setCode(ErrorCode.DB_CONFIG_ERROR_UNAUTHORIZED);
             return result;
         }
-        DbConfig dbConfig = dbConfigRepository.findByServiceId(careerId);
+        DbConfig dbConfig = dbConfigRepository.findByRestaurantId(careerId).orElse(null);
         if(dbConfig == null) {
             result.setResult(false);
             result.setCode(ErrorCode.DB_CONFIG_ERROR_NOT_FOUND);
