@@ -22,7 +22,6 @@ import com.test.master.repository.GroupRepository;
 import com.test.master.repository.RestaurantRepository;
 import com.test.master.service.WinWinApiService;
 import java.util.List;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -119,7 +118,7 @@ public class CustomerController extends ABasicController{
   }
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('CUS_P')")
+  @PreAuthorize("hasRole('CUS_C_P')")
   public ApiMessageDto<CustomerDto> getProfile(){
     ApiMessageDto<CustomerDto> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(getCurrentUser()).orElseThrow(() ->
