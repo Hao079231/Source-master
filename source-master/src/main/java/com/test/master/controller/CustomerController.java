@@ -119,7 +119,7 @@ public class CustomerController extends ABasicController{
   }
 
   @GetMapping(value = "/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('CUS_P')")
+//  @PreAuthorize("hasRole('CUS_C_P')")
   public ApiMessageDto<CustomerDto> getProfile(){
     ApiMessageDto<CustomerDto> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(getCurrentUser()).orElseThrow(() ->
@@ -173,7 +173,7 @@ public class CustomerController extends ABasicController{
   }
 
   @PutMapping(value = "/client-update", produces = MediaType.APPLICATION_JSON_VALUE)
-  @PreAuthorize("hasRole('CUS_C_U')")
+//  @PreAuthorize("hasRole('CUS_C_U')")
   public ApiMessageDto<String> updateProfile(@Valid @RequestBody UpdateProfileCustomerForm updateProfileCustomerForm, BindingResult bindingResult){
     ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(getCurrentUser()).orElseThrow(()
