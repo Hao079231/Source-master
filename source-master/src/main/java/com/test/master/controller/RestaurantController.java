@@ -113,7 +113,7 @@ public class RestaurantController extends ABasicController{
   }
 
   @GetMapping(value = "/client-list", produces = MediaType.APPLICATION_JSON_VALUE)
-//  @PreAuthorize("hasRole('RES_C_L')")
+  @PreAuthorize("hasRole('RES_C_L')")
   public ApiMessageDto<ResponseListDto<List<RestaurantDto>>> getClientList(RestaurantCriteria restaurantCriteria, Pageable pageable){
     ApiMessageDto<ResponseListDto<List<RestaurantDto>>> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(getCurrentUser()).orElseThrow(()
@@ -128,7 +128,7 @@ public class RestaurantController extends ABasicController{
   }
 
   @GetMapping(value = "/client-get/{tenantId}", produces = MediaType.APPLICATION_JSON_VALUE)
-//  @PreAuthorize("hasRole('RES_C_V')")
+  @PreAuthorize("hasRole('RES_C_V')")
   public ApiMessageDto<RestaurantDto> getRestaurantForCustomer(@PathVariable("tenantId") String tenantId){
     ApiMessageDto<RestaurantDto> apiMessageDto = new ApiMessageDto<>();
     Customer customer = customerRepository.findById(getCurrentUser()).orElseThrow(()
